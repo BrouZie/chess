@@ -2,6 +2,13 @@
 #include "iostream"
 #include <cstddef>
 
+Piece::Piece()
+		: m_piece { Type::empty }
+		, m_color { Team::white }
+		, m_currentPos { 0, 0 }
+{
+}
+
 Piece::Piece(Team color, Type piece, std::array<int, 2> currentPos)
 			: m_piece { piece }
 			, m_currentPos { currentPos }

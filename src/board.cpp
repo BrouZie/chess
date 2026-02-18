@@ -1,28 +1,56 @@
 #include "board.h"
+#include "pieces.h"
 #include <iostream>
 
-Board::Board()
-{
-  int rows_with_pieces[] = { 0, 1, 6, 7 };
-  for (int row : rows_with_pieces) {
-    for (int col {}; col < 8; ++col) {
-      board[row][col] = 1;
-    }
-  }
-};
+Board::Board() { }
 
-void Board::printBoard()
+void Board::printBoard() const
 {
-  for (int i {}; i < 8; ++i) {
-    for (int j {}; j < 8; ++j) {
-      std::cout << board[i][j] << " ";
+  for (int row { 7 }; row >= 0; --row) {
+    for (int col {}; col < 8; ++col) {
+      std::cout << getPieceDisplay(row, col);
     }
     std::cout << '\n';
   }
 }
 
-int main() {
-	Board b{};
+std::string Board::getPieceDisplay(int row, int col) const
+{
+  Piece p = board[row][col];
 
-	b.printBoard();
+  if (p.getType() == Piece::Type::empty) {
+    return " . ";
+  }
+
+  std::string display {};
+  // display += (p.getTeam() == Piece::Team::white) ? 'w' : 'b'; // NOTE: Bad for formatting
+
+  switch (p.getType()) {
+  case Piece::Type::pawn:
+    display += " P ";
+    break;
+  case Piece::Type::knight:
+    display += " N ";
+    break;
+  case Piece::Type::bishop:
+    display += " B ";
+    break;
+  case Piece::Type::rook:
+    display += " R ";
+    break;
+  case Piece::Type::queen:
+    display += " Q ";
+    break;
+  case Piece::Type::king:
+    display += " K ";
+    break;
+  default:
+    display = " . ";
+  }
+  return display;
+}
+
+void Board::setPieceAt(int row, int col, Piece::Team team, Piece::Type type)
+{
+  board[row][col] = Piece(team, type, { row, col });
 }

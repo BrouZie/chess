@@ -9,6 +9,7 @@ class Piece
 	public:
 		enum class Type
 		{
+			empty,
 			pawn,
 			knight,
 			bishop,
@@ -23,9 +24,12 @@ class Piece
 			black
 		};
 
+		Piece(); // default constructor
 		Piece(Team color, Type piece, std::array<int, 2> currentPos);
 
 		void getMoves() const;
+		Piece::Type getType() const { return m_piece; }
+		Piece::Team getTeam() const { return m_color; }
 
 	private:
 		std::vector<std::array<int, 2>> knightMoves() const;	
