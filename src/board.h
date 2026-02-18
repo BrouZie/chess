@@ -7,7 +7,7 @@ class Board {
 		Board();
 		void printBoard();
 	private:
-		Piece board[8][8]{};
+		int board[8][8]{};
 };
 
 #endif

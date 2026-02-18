@@ -20,3 +20,9 @@ void Board::printBoard()
     std::cout << '\n';
   }
 }
+
+int main() {
+	Board b{};
+
+	b.printBoard();
+}
