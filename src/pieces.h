@@ -35,6 +35,9 @@ class Piece
 		std::vector<std::array<int, 2>> knightMoves() const;	
 	  std::vector<std::array<int, 2>> kingMoves() const;	
 		std::vector<std::array<int, 2>> pawnMoves() const;
+		std::vector<std::array<int, 2>> rookMoves() const;
+		std::vector<std::array<int, 2>> bishopMoves() const;
+		std::vector<std::array<int, 2>> queenMoves() const;
 		std::vector<std::array<int, 2>> legalMoves(std::vector<std::array<int, 2>>& moves) const;
 		void showMoves(std::vector<std::array<int, 2>> pieceMoves) const;
 
