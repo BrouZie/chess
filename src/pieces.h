@@ -38,8 +38,8 @@ class Piece
 		std::vector<std::array<int, 2>> rookMoves() const;
 		std::vector<std::array<int, 2>> bishopMoves() const;
 		std::vector<std::array<int, 2>> queenMoves() const;
-		std::vector<std::array<int, 2>> legalMoves(std::vector<std::array<int, 2>>& moves) const;
-		void showMoves(std::vector<std::array<int, 2>> pieceMoves) const;
+		std::vector<std::array<int, 2>> legalMoves(const std::vector<std::array<int, 2>>& moves) const;
+		void showMoves(const std::vector<std::array<int, 2>>& pieceMoves) const;
 
 		Type m_piece {};
 		Team m_color {};

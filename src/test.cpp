@@ -3,6 +3,6 @@
 
 int main()
 {
-	Piece knight { Piece::Team::white, Piece::Type::queen, {0, 0} };
+	Piece knight { Piece::Team::white, Piece::Type::queen, {1, 1} };
 	knight.getMoves();
 }

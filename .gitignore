@@ -1,0 +1,14 @@
+# Compiled object files
+*.o
+*.lo
+*.slo
+*.obj
+
+# Build directory
+build/
+
+# Executables
+*.out
+*.exe
+*.app
+run_cpp

@@ -1,5 +1,4 @@
 #include "board.h"
-#include "pieces.h"
 #include <iostream>
 
 Board::Board() { }
@@ -16,7 +15,7 @@ void Board::printBoard() const
 
 std::string Board::getPieceDisplay(int row, int col) const
 {
-  Piece p = board[row][col];
+  const Piece& p = board[row][col];
 
   if (p.getType() == Piece::Type::empty) {
     return " . ";
@@ -45,7 +44,8 @@ std::string Board::getPieceDisplay(int row, int col) const
     display += " K ";
     break;
   default:
-    display = " . ";
+		std::cerr << "No valid type detected\n";
+    break;
   }
   return display;
 }
