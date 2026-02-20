@@ -10,6 +10,7 @@ public:
   Board();
   void printBoard() const;
   void setPieceAt(int row, int col, Piece::Team team, Piece::Type type);
+	const Piece& getPieceAt(int row, int col) const;
 
 private:
 	std::array<std::array<Piece, 8>, 8> board{};

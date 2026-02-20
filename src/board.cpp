@@ -1,4 +1,5 @@
 #include "board.h"
+#include "pieces.h"
 #include <iostream>
 
 Board::Board() { }
@@ -18,11 +19,11 @@ std::string Board::getPieceDisplay(int row, int col) const
   const Piece& p = board[row][col];
 
   if (p.getType() == Piece::Type::empty) {
-    return " . ";
+    return " \033[90m• ";
   }
 
   std::string display {};
-  // display += (p.getTeam() == Piece::Team::white) ? 'w' : 'b'; // NOTE: Bad for formatting
+  display += (p.getTeam() == Piece::Team::white) ? "\033[92m" : "\033[94m";
 
   switch (p.getType()) {
   case Piece::Type::pawn:
@@ -44,7 +45,7 @@ std::string Board::getPieceDisplay(int row, int col) const
     display += " K ";
     break;
   default:
-		std::cerr << "No valid type detected\n";
+    std::cerr << "No valid type detected\n";
     break;
   }
   return display;

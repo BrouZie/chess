@@ -4,11 +4,11 @@
 #include "board.h"
 
 class Game {
-	public:
+public:
 		Game();
 		void displayBoard() const;
 
-	private:
+private:
 		Board m_board;
 		void initializePieces();
 };
