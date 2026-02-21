@@ -1,5 +1,5 @@
 #include "board.h"
-#include "pieces.h"
+#include "display.h"
 #include <iostream>
 #include <vector>
 
@@ -7,12 +7,27 @@ Board::Board() { }
 
 void Board::printBoard() const
 {
-  for (int row { 7 }; row >= 0; --row) {
-    for (int col {}; col < 8; ++col) {
+	auto printBoardLabels = []() 
+	{
+		std::cout << "  ";
+		for (char c{'a'}; c <= 'h'; ++c) { std::cout << ' ' << c << ' '; }
+		std::cout << '\n';
+	};
+
+	printBoardLabels();
+  for (int row { 7 }; row >= 0; --row)
+	{
+		int rank { row + 1 };
+		std::cout << ' ' << rank;
+    for (int col {}; col < boardSize; ++col)
+		{
       std::cout << getPieceDisplay(row, col);
     }
-    std::cout << '\n';
+		std::cout << rank;
+		std::cout << '\n';
   }
+
+	printBoardLabels();
 }
 
 std::string Board::getPieceDisplay(int row, int col) const
@@ -20,35 +35,13 @@ std::string Board::getPieceDisplay(int row, int col) const
   const Piece& p = board[row][col];
 
   if (p.getType() == Piece::Type::empty) {
-    return " \033[90m• ";
+    return std::string(Display::emptySymbol);
   }
 
   std::string display {};
-  display += (p.getTeam() == Piece::Team::white) ? "\033[92m" : "\033[94m";
-
-  switch (p.getType()) {
-  case Piece::Type::pawn:
-    display += " P ";
-    break;
-  case Piece::Type::knight:
-    display += " N ";
-    break;
-  case Piece::Type::bishop:
-    display += " B ";
-    break;
-  case Piece::Type::rook:
-    display += " R ";
-    break;
-  case Piece::Type::queen:
-    display += " Q ";
-    break;
-  case Piece::Type::king:
-    display += " K ";
-    break;
-  default:
-    std::cerr << "No valid type detected\n";
-    break;
-  }
+	display += Display::teamColors(p.getTeam());
+	display += Display::pieceSymbol(p.getType());
+	display += Display::colorReset;
   return display;
 }
 
