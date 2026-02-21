@@ -7,7 +7,7 @@ Piece::Piece()
 {
 }
 
-Piece::Piece(Team color, Type piece, std::array<int, 2> currentPos)
+Piece::Piece(Team color, Type piece, Position currentPos)
 			: m_color { color }
 			, m_piece { piece }
 			, m_currentPos { currentPos }

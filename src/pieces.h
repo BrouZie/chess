@@ -30,7 +30,6 @@ class Piece
 
 		Piece::Type getType() const { return m_piece; }
 		Piece::Team getTeam() const { return m_color; }
-		Position getPiece() const { return m_currentPos; }
 
 	private:
 		Type m_piece {};
