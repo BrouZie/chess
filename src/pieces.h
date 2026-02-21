@@ -3,8 +3,6 @@
 
 #include <array>
 
-using Position = std::array<int, 2>;
-
 class Piece
 {
 	public:
@@ -26,7 +24,7 @@ class Piece
 		};
 
 		Piece(); // default constructor
-		Piece(Team color, Type piece, Position currentPos);
+		Piece(Team color, Type piece);
 
 		Piece::Type getType() const { return m_piece; }
 		Piece::Team getTeam() const { return m_color; }
@@ -34,7 +32,6 @@ class Piece
 	private:
 		Type m_piece {};
 		Team m_color {};
-		Position m_currentPos {};
 };
 
 #endif 

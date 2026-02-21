@@ -54,7 +54,7 @@ std::string Board::getPieceDisplay(int row, int col) const
 
 void Board::setPieceAt(int row, int col, Piece::Team team, Piece::Type type)
 {
-  board[row][col] = Piece(team, type, { row, col });
+  board[row][col] = Piece(team, type);
 }
 
 const Piece& Board::getPieceAt(int row, int col) const
@@ -279,7 +279,7 @@ bool Board::movePiece(Position from, Position to)
 	if (piece.getType() == Piece::Type::empty)
 		return false;
 
-	board[toRow][toCol] = Piece(piece.getTeam(), piece.getType(), to);
+	board[toRow][toCol] = Piece(piece.getTeam(), piece.getType());
 	board[fromRow][fromCol] = Piece(); // empty piece
 	return true;
 }

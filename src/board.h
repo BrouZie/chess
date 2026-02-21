@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+using Position = std::array<int, 2>;
+
 class Board
 {
 public:
