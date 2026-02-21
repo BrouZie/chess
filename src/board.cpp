@@ -72,3 +72,64 @@ bool Board::isEnemyAt(Position pos, Piece::Team team) const
 	const Piece& p {board[pos[0]][pos[1]]};
 	return p.getType() != Piece::Type::empty && p.getTeam() != team;
 }
+
+std::vector<Position> Board::getLegalMoves(Position pos) const
+{
+		auto [row, col] = pos;
+		const Piece& piece { board[row][col] };
+
+		switch (piece.getType())
+		{
+				case Piece::Type::knight: return getKnightMoves(pos, piece.getTeam());
+				case Piece::Type::rook: return getRookMoves(pos, piece.getTeam());
+				case Piece::Type::bishop: return getBishopMoves(pos, piece.getTeam());
+				case Piece::Type::queen: return getQueenMoves(pos, piece.getTeam());
+				case Piece::Type::king: return getKingMoves(pos, piece.getTeam());
+				case Piece::Type::pawn: return getPawnMoves(pos, piece.getTeam());
+				default: return {};
+		}
+}
+
+std::vector<Position> Board::getKnightMoves(Position pos, Piece::Team team) const
+{
+	auto [row, col] = pos;
+	std::vector<Position> moves {};
+
+	std::vector<Position> offsets {
+		{1, 2}, {2, 1}, {2, -1}, {1, -2},
+		{-1, -2}, {-2, -1}, {-2, 1}, {-1, 2}
+	};
+
+	for (const auto& [dr, dc] : offsets)
+	{
+		Position target { row + dr, col + dc };
+		if (isInBounds(target) && (isEmptyAt(target) || isEnemyAt(target, team)))
+		{
+			moves.push_back(target);
+		}
+	}
+
+	return moves;
+}
+
+std::vector<Position> Board::getKingMoves(Position pos, Piece::Team team) const
+{
+	auto [row, col] = pos;
+	std::vector<Position> moves {};
+
+	std::vector<Position> offsets {
+		{0, 1}, {1, 1}, {1, 0}, {1, -1},
+		{0, -1}, {-1, -1}, {-1, 0}, {-1, 1}
+	};
+
+	for (const auto& [dr, dc] : offsets)
+	{
+		Position target { row + dr, col + dc };
+		if (isInBounds(target) && (isEmptyAt(target) || isEnemyAt(target, team)))
+		{
+			moves.push_back(target);
+		}
+	}
+
+	return moves;
+}
