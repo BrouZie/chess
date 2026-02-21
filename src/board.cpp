@@ -9,7 +9,7 @@ void Board::printBoard() const
 {
 	auto printBoardLabels = []() 
 	{
-		std::cout << "  ";
+		std::cout << Display::boardIndent << "  ";
 		for (char c{'a'}; c <= 'h'; ++c) { std::cout << ' ' << c << ' '; }
 		std::cout << '\n';
 	};
@@ -18,7 +18,7 @@ void Board::printBoard() const
   for (int row { 7 }; row >= 0; --row)
 	{
 		int rank { row + 1 };
-		std::cout << ' ' << rank;
+		std::cout << Display::boardIndent << ' ' << rank;
     for (int col {}; col < boardSize; ++col)
 		{
       std::cout << getPieceDisplay(row, col);
