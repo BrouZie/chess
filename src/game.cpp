@@ -1,4 +1,5 @@
 #include "game.h"
+#include <algorithm>
 
 // Places "empty pieces" in 2D grid
 Game::Game()
@@ -39,4 +40,31 @@ void Game::initializePieces()
 void Game::displayBoard() const
 {
 	m_board.printBoard();
+}
+
+bool Game::tryMove(Position from, Position to)
+{
+	auto [row, col] = from;
+	const Piece& piece { m_board.getPieceAt(row, col) };
+
+	if (piece.getType() == Piece::Type::empty)
+		return false;
+
+	if (piece.getTeam() != m_currentTurn)
+		return false;
+
+	auto moves { m_board.getLegalMoves(from) };
+	if (std::find(moves.begin(), moves.end(), to) == moves.end())
+		return false;
+
+	m_board.movePiece(from, to);
+
+	m_currentTurn = (m_currentTurn == Piece::Team::white) ? Piece::Team::black : Piece::Team::white;
+
+	return true;
+}
+
+std::vector<Position> Game::getLegalMoves(Position pos) const
+{
+	return m_board.getLegalMoves(pos);
 }

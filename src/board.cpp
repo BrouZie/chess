@@ -1,5 +1,6 @@
 #include "board.h"
 #include "pieces.h"
+#include <charconv>
 #include <iostream>
 #include <vector>
 
@@ -55,6 +56,11 @@ std::string Board::getPieceDisplay(int row, int col) const
 void Board::setPieceAt(int row, int col, Piece::Team team, Piece::Type type)
 {
   board[row][col] = Piece(team, type, { row, col });
+}
+
+const Piece& Board::getPieceAt(int row, int col) const
+{
+	return board[row][col];
 }
 
 bool Board::isInBounds(Position pos) const
@@ -132,4 +138,149 @@ std::vector<Position> Board::getKingMoves(Position pos, Piece::Team team) const
 	}
 
 	return moves;
+}
+
+std::vector<Position> Board::getRookMoves(Position pos, Piece::Team team) const
+{
+	auto [row, col] = pos;
+	std::vector<Position> moves {};
+
+	std::vector<Position> directions { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
+
+	for (const auto& [dr, dc] : directions)
+	{
+		Position current { row + dr, col + dc };
+
+		while (isInBounds(current))
+		{
+			if (isEmptyAt(current))
+			{
+				moves.push_back(current);
+			}
+			else
+			{
+				if (isEnemyAt(current, team))
+					moves.push_back(current);
+				break;
+			}
+			current[0] += dr;
+			current[1] += dc;
+		}
+	}
+
+	return moves;
+}
+
+std::vector<Position> Board::getBishopMoves(Position pos, Piece::Team team) const
+{
+	auto [row, col] = pos;
+	std::vector<Position> moves {};
+
+	std::vector<Position> directions { {1, 1}, {1, -1}, {-1, -1}, {-1, 1} };
+
+	for (const auto& [dr, dc] : directions)
+	{
+		Position current { row + dr, col + dc };
+
+		while (isInBounds(current))
+		{
+			if (isEmptyAt(current))
+			{
+				moves.push_back(current);
+			}
+			else
+			{
+				if (isEnemyAt(current, team))
+					moves.push_back(current);
+				break;
+			}
+			current[0] += dr;
+			current[1] += dc;
+		}
+	}
+
+	return moves;
+}
+
+std::vector<Position> Board::getQueenMoves(Position pos, Piece::Team team) const
+{
+	auto [row, col] = pos;
+	std::vector<Position> moves {};
+
+  std::vector<Position> directions {
+      {1, 0}, {-1, 0}, {0, 1}, {0, -1},
+      {1, 1}, {1, -1}, {-1, -1}, {-1, 1}
+  };
+
+	for (const auto& [dr, dc] : directions)
+	{
+		Position current { row + dr, col + dc };
+
+		while (isInBounds(current))
+		{
+			if (isEmptyAt(current))
+			{
+				moves.push_back(current);
+			}
+			else
+			{
+				if (isEnemyAt(current, team))
+					moves.push_back(current);
+				break;
+			}
+			current[0] += dr;
+			current[1] += dc;
+		}
+	}
+
+	return moves;
+}
+
+std::vector<Position> Board::getPawnMoves(Position pos, Piece::Team team) const
+{
+	auto [row, col] = pos;
+	std::vector<Position> moves {};
+
+	int direction { (team == Piece::Team::white) ? 1 : -1 };
+	int startRow { (team == Piece::Team::white) ? 1 : 6 };
+
+	// Forward one
+	Position oneAhead { row + direction, col };
+	if (isInBounds(oneAhead) && isEmptyAt(oneAhead))
+	{
+		moves.push_back(oneAhead);
+
+		// Forward two (only if one ahead was empty AND on starting row)
+		Position twoAhead { row + 2 * direction, col };
+		if (row == startRow && isInBounds(twoAhead) && isEmptyAt(twoAhead))
+		{
+			moves.push_back(twoAhead);
+		}
+	}
+
+	// Diagonal captures
+	for (int dc : {-1, 1})
+	{
+		Position diag { row + direction, col + dc };
+		if (isInBounds(diag) && isEnemyAt(diag, team))
+		{
+			moves.push_back(diag);
+		}
+	}
+
+	return moves;
+}
+
+bool Board::movePiece(Position from, Position to)
+{
+	auto [fromRow, fromCol] = from;
+	auto [toRow, toCol] = to;
+
+	const Piece& piece { board[fromRow][fromCol] };
+	if (piece.getType() == Piece::Type::empty)
+		return false;
+
+	board[toRow][toCol] = Piece(piece.getTeam(), piece.getType(), to);
+	board[fromRow][fromCol] = Piece(); // empty piece
+	return true;
 }
