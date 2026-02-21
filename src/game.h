@@ -3,14 +3,18 @@
 
 #include "board.h"
 
-class Game {
-	public:
-		Game();
-		void displayBoard() const;
+class Game
+{
+public:
+  Game();
+  void displayBoard() const;
+  bool tryMove(Position from, Position to);
+  std::vector<Position> getLegalMoves(Position pos) const;
 
-	private:
-		Board m_board;
-		void initializePieces();
+private:
+  Board m_board;
+  Piece::Team m_currentTurn { Piece::Team::white };
+  void initializePieces();
 };
 
 #endif

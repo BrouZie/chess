@@ -2,7 +2,8 @@
 #define PIECES_H
 
 #include <array>
-#include <vector>
+
+using Position = std::array<int, 2>;
 
 class Piece
 {
@@ -25,26 +26,16 @@ class Piece
 		};
 
 		Piece(); // default constructor
-		Piece(Team color, Type piece, std::array<int, 2> currentPos);
+		Piece(Team color, Type piece, Position currentPos);
 
-		void getMoves() const;
 		Piece::Type getType() const { return m_piece; }
 		Piece::Team getTeam() const { return m_color; }
+		Position getPiece() const { return m_currentPos; }
 
 	private:
-		std::vector<std::array<int, 2>> knightMoves() const;	
-	  std::vector<std::array<int, 2>> kingMoves() const;	
-		std::vector<std::array<int, 2>> pawnMoves() const;
-		std::vector<std::array<int, 2>> rookMoves() const;
-		std::vector<std::array<int, 2>> bishopMoves() const;
-		std::vector<std::array<int, 2>> queenMoves() const;
-		std::vector<std::array<int, 2>> legalMoves(const std::vector<std::array<int, 2>>& moves) const;
-		void showMoves(const std::vector<std::array<int, 2>>& pieceMoves) const;
-
 		Type m_piece {};
 		Team m_color {};
-		std::array<int, 2> m_currentPos {};
-
+		Position m_currentPos {};
 };
 
 #endif 
