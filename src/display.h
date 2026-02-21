@@ -10,6 +10,8 @@ namespace Display
 	constexpr std::string_view colorBlack = "\033[94m"; // blue
 	constexpr std::string_view colorReset = "\033[90m"; // white
 
+	constexpr std::string_view boardIndent = "        ";
+
 	constexpr std::string_view emptySymbol = " • ";
 	constexpr std::string_view pawnSymbol = " P ";
 	constexpr std::string_view knightSymbol = " N ";

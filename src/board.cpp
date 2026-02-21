@@ -23,6 +23,7 @@ void Board::printBoard() const
 		{
       std::cout << getPieceDisplay(row, col);
     }
+		std::cout << rank;
 		std::cout << '\n';
   }
 
