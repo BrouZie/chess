@@ -2,7 +2,6 @@
 #define PIECES_H
 
 #include <array>
-#include <vector>
 
 using Position = std::array<int, 2>;
 
@@ -29,7 +28,6 @@ class Piece
 		Piece(); // default constructor
 		Piece(Team color, Type piece, Position currentPos);
 
-		Position getPosition() const { return m_currentPos; }
 		// void getMoves() const;
 		Piece::Type getType() const { return m_piece; }
 		Piece::Team getTeam() const { return m_color; }

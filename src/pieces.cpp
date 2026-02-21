@@ -1,6 +1,4 @@
 #include "pieces.h"
-#include <iostream>
-#include <cstddef>
 
 Piece::Piece()
 		: m_color { Team::white }
