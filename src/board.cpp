@@ -7,14 +7,13 @@ Board::Board() { }
 
 void Board::printBoard() const
 {
-	auto printBoardLabels = []() 
+	auto printBoardLabels = []()
 	{
 		std::cout << Display::boardIndent << "  ";
 		for (char c{'a'}; c <= 'h'; ++c) { std::cout << ' ' << c << ' '; }
 		std::cout << '\n';
 	};
 
-	printBoardLabels();
   for (int row { 7 }; row >= 0; --row)
 	{
 		int rank { row + 1 };
@@ -23,7 +22,6 @@ void Board::printBoard() const
 		{
       std::cout << getPieceDisplay(row, col);
     }
-		std::cout << rank;
 		std::cout << '\n';
   }
 
