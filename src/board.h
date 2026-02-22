@@ -22,7 +22,7 @@ public:
 private:
   static constexpr int boardSize { 8 };
 
-  std::array<std::array<Piece, boardSize>, boardSize> board {};
+  std::array<std::array<Piece, boardSize>, boardSize> m_grid {};
   // board[0][col] = bottom row
   // board[7][col] = top row
 

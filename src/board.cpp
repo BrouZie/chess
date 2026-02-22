@@ -30,7 +30,7 @@ void Board::printBoard() const
 
 std::string Board::getPieceDisplay(int row, int col) const
 {
-  const Piece& p = board[row][col];
+  const Piece& p = m_grid[row][col];
 
   if (p.getType() == Piece::Type::empty) {
     return std::string(Display::emptySymbol);
@@ -45,12 +45,12 @@ std::string Board::getPieceDisplay(int row, int col) const
 
 void Board::setPieceAt(int row, int col, Piece::Team team, Piece::Type type)
 {
-  board[row][col] = Piece(team, type);
+  m_grid[row][col] = Piece(team, type);
 }
 
 const Piece& Board::getPieceAt(int row, int col) const
 {
-	return board[row][col];
+	return m_grid[row][col];
 }
 
 bool Board::isInBounds(Position pos) const
@@ -60,19 +60,19 @@ bool Board::isInBounds(Position pos) const
 
 bool Board::isEmptyAt(Position pos) const
 {
-	return board[pos[0]][pos[1]].getType() == Piece::Type::empty;
+	return m_grid[pos[0]][pos[1]].getType() == Piece::Type::empty;
 }
 
 bool Board::isEnemyAt(Position pos, Piece::Team team) const
 {
-	const Piece& p {board[pos[0]][pos[1]]};
+	const Piece& p {m_grid[pos[0]][pos[1]]};
 	return p.getType() != Piece::Type::empty && p.getTeam() != team;
 }
 
 std::vector<Position> Board::getLegalMoves(Position pos) const
 {
 		auto [row, col] = pos;
-		const Piece& piece { board[row][col] };
+		const Piece& piece { m_grid[row][col] };
 
 		switch (piece.getType())
 		{
@@ -266,11 +266,11 @@ bool Board::movePiece(Position from, Position to)
 	auto [fromRow, fromCol] = from;
 	auto [toRow, toCol] = to;
 
-	const Piece& piece { board[fromRow][fromCol] };
+	const Piece& piece { m_grid[fromRow][fromCol] };
 	if (piece.getType() == Piece::Type::empty)
 		return false;
 
-	board[toRow][toCol] = Piece(piece.getTeam(), piece.getType());
-	board[fromRow][fromCol] = Piece(); // empty piece
+	m_grid[toRow][toCol] = Piece(piece.getTeam(), piece.getType());
+	m_grid[fromRow][fromCol] = Piece(); // empty piece
 	return true;
 }
