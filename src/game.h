@@ -15,7 +15,6 @@ public:
 private:
   Board m_board;
   Piece::Team m_currentTurn { Piece::Team::white };
-	const Position& chessToGrid(std::string_view input) const;
 };
 
 #endif
