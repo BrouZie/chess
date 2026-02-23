@@ -6,15 +6,24 @@
 #include <string>
 #include <vector>
 
-using Position = std::array<int, 2>;
+struct Position
+{
+	int row {};
+	int col {};
+  bool operator==(const Position& other) const
+  {
+      return row == other.row && col == other.col;
+  }
+};
 
 class Board
 {
 public:
   Board();
+	static Board standardPosition();
   void printBoard() const;
-  void setPieceAt(int row, int col, Piece::Team team, Piece::Type type);
-  const Piece& getPieceAt(int row, int col) const;
+  void setPieceAt(Position pos, Piece::Team team, Piece::Type type);
+  const Piece& getPieceAt(Position pos) const;
 
   std::vector<Position> getLegalMoves(Position pos) const;
   bool movePiece(Position from, Position to);
@@ -37,7 +46,7 @@ private:
   bool isEmptyAt(Position pos) const;
   bool isEnemyAt(Position pos, Piece::Team team) const;
 
-  std::string getPieceDisplay(int row, int col) const;
+  std::string getPieceDisplay(Position pos) const;
 };
 
 #endif

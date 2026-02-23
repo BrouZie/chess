@@ -5,6 +5,41 @@
 
 Board::Board() { }
 
+Board Board::standardPosition()
+{
+	Board board {};
+
+  board.setPieceAt({0, 0}, Piece::Team::white, Piece::Type::rook);
+  board.setPieceAt({0, 1}, Piece::Team::white, Piece::Type::knight);
+  board.setPieceAt({0, 2}, Piece::Team::white, Piece::Type::bishop);
+  board.setPieceAt({0, 3}, Piece::Team::white, Piece::Type::queen);
+  board.setPieceAt({0, 4}, Piece::Team::white, Piece::Type::king);
+  board.setPieceAt({0, 5}, Piece::Team::white, Piece::Type::bishop);
+  board.setPieceAt({0, 6}, Piece::Team::white, Piece::Type::knight);
+  board.setPieceAt({0, 7}, Piece::Team::white, Piece::Type::rook);
+
+  for (int col {}; col < 8; ++col)
+  {
+    board.setPieceAt({1, col}, Piece::Team::white, Piece::Type::pawn);
+  }
+
+  for (int col {}; col < 8; ++col)
+  {
+    board.setPieceAt({6, col}, Piece::Team::black, Piece::Type::pawn);
+  }
+
+  board.setPieceAt({7, 0}, Piece::Team::black, Piece::Type::rook);
+  board.setPieceAt({7, 1}, Piece::Team::black, Piece::Type::knight);
+  board.setPieceAt({7, 2}, Piece::Team::black, Piece::Type::bishop);
+  board.setPieceAt({7, 3}, Piece::Team::black, Piece::Type::queen);
+  board.setPieceAt({7, 4}, Piece::Team::black, Piece::Type::king);
+  board.setPieceAt({7, 5}, Piece::Team::black, Piece::Type::bishop);
+  board.setPieceAt({7, 6}, Piece::Team::black, Piece::Type::knight);
+  board.setPieceAt({7, 7}, Piece::Team::black, Piece::Type::rook);
+
+	return board;
+}
+
 void Board::printBoard() const
 {
 	auto printBoardLabels = []()
@@ -20,7 +55,7 @@ void Board::printBoard() const
 		std::cout << Display::boardIndent << ' ' << rank;
     for (int col {}; col < boardSize; ++col)
 		{
-      std::cout << getPieceDisplay(row, col);
+      std::cout << getPieceDisplay(Position { row, col} );
     }
 		std::cout << '\n';
   }
@@ -28,9 +63,9 @@ void Board::printBoard() const
 	printBoardLabels();
 }
 
-std::string Board::getPieceDisplay(int row, int col) const
+std::string Board::getPieceDisplay(Position pos) const
 {
-  const Piece& p = m_grid[row][col];
+  const Piece& p = m_grid[pos.row][pos.col];
 
   if (p.getType() == Piece::Type::empty) {
     return std::string(Display::emptySymbol);
@@ -43,29 +78,29 @@ std::string Board::getPieceDisplay(int row, int col) const
   return display;
 }
 
-void Board::setPieceAt(int row, int col, Piece::Team team, Piece::Type type)
+void Board::setPieceAt(Position pos, Piece::Team team, Piece::Type type)
 {
-  m_grid[row][col] = Piece(team, type);
+  m_grid[pos.row][pos.col] = Piece(team, type);
 }
 
-const Piece& Board::getPieceAt(int row, int col) const
+const Piece& Board::getPieceAt(Position pos) const
 {
-	return m_grid[row][col];
+	return m_grid[pos.row][pos.col];
 }
 
 bool Board::isInBounds(Position pos) const
 {
-	return pos[0] >= 0 && pos[0] < boardSize && pos[1] >= 0 && pos[1] < boardSize;
+	return pos.row >= 0 && pos.row < boardSize && pos.col >= 0 && pos.col < boardSize;
 }
 
 bool Board::isEmptyAt(Position pos) const
 {
-	return m_grid[pos[0]][pos[1]].getType() == Piece::Type::empty;
+	return m_grid[pos.row][pos.col].getType() == Piece::Type::empty;
 }
 
 bool Board::isEnemyAt(Position pos, Piece::Team team) const
 {
-	const Piece& p {m_grid[pos[0]][pos[1]]};
+	const Piece& p {m_grid[pos.row][pos.col]};
 	return p.getType() != Piece::Type::empty && p.getTeam() != team;
 }
 
@@ -153,8 +188,8 @@ std::vector<Position> Board::getRookMoves(Position pos, Piece::Team team) const
 					moves.push_back(current);
 				break;
 			}
-			current[0] += dr;
-			current[1] += dc;
+			current.row += dr;
+			current.col += dc;
 		}
 	}
 
@@ -184,8 +219,8 @@ std::vector<Position> Board::getBishopMoves(Position pos, Piece::Team team) cons
 					moves.push_back(current);
 				break;
 			}
-			current[0] += dr;
-			current[1] += dc;
+			current.row += dr;
+			current.col += dc;
 		}
 	}
 
@@ -218,8 +253,8 @@ std::vector<Position> Board::getQueenMoves(Position pos, Piece::Team team) const
 					moves.push_back(current);
 				break;
 			}
-			current[0] += dr;
-			current[1] += dc;
+			current.row += dr;
+			current.col += dc;
 		}
 	}
 
