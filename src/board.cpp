@@ -55,7 +55,7 @@ void Board::printBoard() const
 		std::cout << Display::boardIndent << ' ' << rank;
     for (int col {}; col < boardSize; ++col)
 		{
-      std::cout << getPieceDisplay(Position { .row=row, .col=col} );
+      std::cout << getPieceDisplay(Position { row, col} );
     }
 		std::cout << '\n';
   }

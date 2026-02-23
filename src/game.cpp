@@ -4,9 +4,10 @@
 
 namespace
 {
+	// Helper: chess notation to Position
 	Position chessToGrid(std::string_view input)
 	{
-		return Position { .row=(input[1] - '1'), .col=(input[0] - 'a') };
+		return Position { (input[1] - '1'), (input[0] - 'a') };
 	}
 }
 
