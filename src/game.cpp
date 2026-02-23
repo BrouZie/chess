@@ -1,47 +1,26 @@
 #include "game.h"
 #include <algorithm>
+#include <iostream>
 
-// Places "empty pieces" in 2D grid
-Game::Game() { initializePieces(); }
-
-// Places pieces on the board
-void Game::initializePieces()
+namespace
 {
-  m_board.setPieceAt(0, 0, Piece::Team::white, Piece::Type::rook);
-  m_board.setPieceAt(0, 1, Piece::Team::white, Piece::Type::knight);
-  m_board.setPieceAt(0, 2, Piece::Team::white, Piece::Type::bishop);
-  m_board.setPieceAt(0, 3, Piece::Team::white, Piece::Type::queen);
-  m_board.setPieceAt(0, 4, Piece::Team::white, Piece::Type::king);
-  m_board.setPieceAt(0, 5, Piece::Team::white, Piece::Type::bishop);
-  m_board.setPieceAt(0, 6, Piece::Team::white, Piece::Type::knight);
-  m_board.setPieceAt(0, 7, Piece::Team::white, Piece::Type::rook);
+	Position chessToGrid(std::string_view input)
+	{
+		return Position { .row=(input[1] - '1'), .col=(input[0] - 'a') };
+	}
+}
 
-  for (int col {}; col < 8; ++col)
-  {
-    m_board.setPieceAt(1, col, Piece::Team::white, Piece::Type::pawn);
-  }
-
-  for (int col {}; col < 8; ++col)
-  {
-    m_board.setPieceAt(6, col, Piece::Team::black, Piece::Type::pawn);
-  }
-
-  m_board.setPieceAt(7, 0, Piece::Team::black, Piece::Type::rook);
-  m_board.setPieceAt(7, 1, Piece::Team::black, Piece::Type::knight);
-  m_board.setPieceAt(7, 2, Piece::Team::black, Piece::Type::bishop);
-  m_board.setPieceAt(7, 3, Piece::Team::black, Piece::Type::queen);
-  m_board.setPieceAt(7, 4, Piece::Team::black, Piece::Type::king);
-  m_board.setPieceAt(7, 5, Piece::Team::black, Piece::Type::bishop);
-  m_board.setPieceAt(7, 6, Piece::Team::black, Piece::Type::knight);
-  m_board.setPieceAt(7, 7, Piece::Team::black, Piece::Type::rook);
+// Initialize w/ standard chess positions
+Game::Game()
+	: m_board { Board::standardPosition() }
+{
 }
 
 void Game::displayBoard() const { m_board.printBoard(); }
 
 bool Game::tryMove(Position from, Position to)
 {
-  auto [row, col] = from;
-  const Piece& piece { m_board.getPieceAt(row, col) };
+  const Piece& piece { m_board.getPieceAt(from) };
 
   if (piece.getType() == Piece::Type::empty)
     return false;
@@ -63,4 +42,21 @@ bool Game::tryMove(Position from, Position to)
 std::vector<Position> Game::getLegalMoves(Position pos) const
 {
 	return m_board.getLegalMoves(pos);
+}
+
+void Game::displayLegalMoves(Position pos) const
+{
+	auto moves {getLegalMoves(pos)};
+
+	std::cout << "Possible moves:\n";
+
+	int choice {1};
+	for (auto move : moves)
+	{
+		char file = static_cast<char>(move.col + 'a');
+		char rank = static_cast<char>(move.row + '1');
+
+		std::cout << choice << ": "<< file << rank << '\n';
+		++choice;
+	}
 }
