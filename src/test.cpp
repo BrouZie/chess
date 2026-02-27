@@ -1,8 +1,21 @@
-#include "pieces.h"
-
+#include "game.h"
+#include <iostream>
 
 int main()
 {
-	Piece knight { Piece::Team::white, Piece::Type::queen, {1, 1} };
-	knight.getMoves();
+	Game game;
+
+	while(true)
+	{
+		std::cout << "Press 'n' to exit\n";
+		char userInput {};
+		std::cin >> userInput;
+
+		if (userInput == 'n')
+			break;
+
+		game.init();
+	}
+
+	return 0;
 }

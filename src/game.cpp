@@ -9,6 +9,15 @@ namespace
 	{
 		return Position { (input[1] - '1'), (input[0] - 'a') };
 	}
+
+	std::string gridToChess(Position pos)
+	{
+		std::string square {};
+		square += static_cast<char>(pos.col + 'a');
+		square += static_cast<char>(pos.row + '1');
+		
+		return square;
+	}
 }
 
 // Initialize w/ standard chess positions
@@ -54,10 +63,29 @@ void Game::displayLegalMoves(Position pos) const
 	int choice {1};
 	for (auto move : moves)
 	{
-		char file = static_cast<char>(move.col + 'a');
-		char rank = static_cast<char>(move.row + '1');
+		// char file = static_cast<char>(move.col + 'a');
+		// char rank = static_cast<char>(move.row + '1');
+		//
+		// std::cout << choice << ": "<< file << rank << '\n';
 
-		std::cout << choice << ": "<< file << rank << '\n';
-		++choice;
+		std::cout << choice << ": " << gridToChess(move) << '\n';
+	 	++choice;
 	}
+}
+
+void Game::init()
+{
+	displayBoard();
+
+	std::cout << "Which piece would you like to move? ";
+	std::string chosenPiece {};
+	std::cin >> chosenPiece;
+
+	displayLegalMoves(chessToGrid(static_cast<std::string_view>(chosenPiece)));
+
+	std::cout << "Where would you like to move the piece? ";
+	std::string newPos {};
+	std::cin >> newPos;
+	
+	m_board.movePiece(chessToGrid(chosenPiece), chessToGrid(newPos));
 }
