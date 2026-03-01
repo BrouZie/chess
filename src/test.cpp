@@ -1,5 +1,6 @@
 #include "game.h"
 #include <iostream>
+#include <limits>
 
 int main()
 {
@@ -8,11 +9,9 @@ int main()
 	while(true)
 	{
 		std::cout << "Press 'n' to exit\n";
-		char userInput {};
-		std::cin >> userInput;
-
-		if (userInput == 'n')
-			break;
+		char input {};
+		std::cin >> input;
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 		game.init();
 	}

@@ -29,6 +29,22 @@ namespace
 		}
 
 	}
+
+	bool validChessInput(std::string_view input)
+	{
+		if (input.size() == 2)
+		{
+			char file { input[0] };
+			char rank { input[1] };
+
+			if (file >= 'a' && file <= 'h'
+					&& rank >= '1' && rank <= '8')
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
 
 // Initialize w/ standard chess positions
@@ -99,27 +115,22 @@ void Game::init()
 			std::getline(std::cin, chosenPiece);
 			chosenPiece.erase(std::remove(chosenPiece.begin(), chosenPiece.end(), ' '), chosenPiece.end());
 
-			if (chosenPiece.size() == 2)
+			if (validChessInput(chosenPiece)) 
 			{
-				char file { chosenPiece[0] };
-				char rank { chosenPiece[1] };
+				break;
+			}
 
-				if (file >= 'a' && file <= 'h'
-						&& rank >= '1' && rank <= '8')
-				{
-					break;
-				}
-
-				else
-				{
-					std::cout << "The format is wrong! The first character should be from a-h and second should be from 1-8.\n";
-				}
+			else
+			{
+				std::cout << "The format is wrong! The first character should be from a-h and second should be from 1-8.\n";
 			}
 		}
 
-		displayLegalMoves(chessToGrid(static_cast<std::string_view>(chosenPiece)));
-		if (m_board.getLegalMoves(chessToGrid(chosenPiece)).size() > 0)
+		std::vector<Position> legalMoves = m_board.getLegalMoves(chessToGrid(chosenPiece));
+		if (legalMoves.size() > 0 
+				&& m_board.getPieceAt(chessToGrid(chosenPiece)).getTeam() == getCurrentTurn())
 		{
+			displayLegalMoves(chessToGrid(static_cast<std::string_view>(chosenPiece)));
 			break;
 		}
 		else
@@ -128,9 +139,39 @@ void Game::init()
 		}
 	}
 
-	std::cout << "Where would you like to move the piece? \n";
 	std::string newPos {};
-	std::cin >> newPos;
-	
-	tryMove(chessToGrid(chosenPiece), chessToGrid(newPos));
+	while (true)
+	{
+		std::cout << "Where would you like to move the piece? \n";
+		while (true)
+		{
+			std::getline(std::cin, newPos);
+			newPos.erase(std::remove(newPos.begin(), newPos.end(), ' '), newPos.end());
+			if (validChessInput(newPos)) 
+			{
+				break;
+			}
+
+			else
+			{
+				std::cout << "The format is wrong! The first character should be from a-h and second should be from 1-8.\n";
+			}
+		}
+		bool foundLegalMove { false };
+		std::vector<Position> legalMoves = m_board.getLegalMoves(chessToGrid(chosenPiece));
+		for (const auto move : legalMoves)
+		{
+			if (chessToGrid(newPos) == move)
+			{
+				tryMove(chessToGrid(chosenPiece), chessToGrid(newPos));
+				foundLegalMove = true;
+				break;
+			}
+		}
+		if (foundLegalMove)
+		{
+			break;
+		}
+		std::cout << "Your move is not legal!\n";
+	}
 }
