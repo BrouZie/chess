@@ -18,6 +18,17 @@ namespace
 		
 		return square;
 	}
+
+	std::string_view teamToString(Piece::Team team)
+	{
+		switch(team)
+		{
+			case Piece::Team::white: return "white";
+			case Piece::Team::black: return "black";
+			default: return "???";
+		}
+
+	}
 }
 
 // Initialize w/ standard chess positions
@@ -75,17 +86,51 @@ void Game::displayLegalMoves(Position pos) const
 
 void Game::init()
 {
+	std::cout << teamToString(getCurrentTurn()) << "'s turn:\n";
+
 	displayBoard();
-
-	std::cout << "Which piece would you like to move? ";
 	std::string chosenPiece {};
-	std::cin >> chosenPiece;
 
-	displayLegalMoves(chessToGrid(static_cast<std::string_view>(chosenPiece)));
+	while (true)
+	{
+		std::cout << "Which piece would you like to move? ";
+		while (true)
+		{
+			std::getline(std::cin, chosenPiece);
+			chosenPiece.erase(std::remove(chosenPiece.begin(), chosenPiece.end(), ' '), chosenPiece.end());
 
-	std::cout << "Where would you like to move the piece? ";
+			if (chosenPiece.size() == 2)
+			{
+				char file { chosenPiece[0] };
+				char rank { chosenPiece[1] };
+
+				if (file >= 'a' && file <= 'h'
+						&& rank >= '1' && rank <= '8')
+				{
+					break;
+				}
+
+				else
+				{
+					std::cout << "The format is wrong! The first character should be from a-h and second should be from 1-8.\n";
+				}
+			}
+		}
+
+		displayLegalMoves(chessToGrid(static_cast<std::string_view>(chosenPiece)));
+		if (m_board.getLegalMoves(chessToGrid(chosenPiece)).size() > 0)
+		{
+			break;
+		}
+		else
+		{
+			std::cout << "Choose a valid square!\n";
+		}
+	}
+
+	std::cout << "Where would you like to move the piece? \n";
 	std::string newPos {};
 	std::cin >> newPos;
 	
-	m_board.movePiece(chessToGrid(chosenPiece), chessToGrid(newPos));
+	tryMove(chessToGrid(chosenPiece), chessToGrid(newPos));
 }
