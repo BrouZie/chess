@@ -12,7 +12,7 @@ public:
   std::vector<Position> getLegalMoves(Position pos) const;
 	void displayLegalMoves(Position pos) const;
 	Piece::Team getCurrentTurn() { return m_currentTurn; }
-	void init();
+	bool init();
 
 private:
   Board m_board;

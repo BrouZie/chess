@@ -1,20 +1,16 @@
 #include "game.h"
 #include <iostream>
-#include <limits>
 
 int main()
 {
 	Game game;
+	std::cout << "Write 'exit' if you want to exit the program!\n";
 
-	while(true)
+	while(game.init())
 	{
-		std::cout << "Press 'n' to exit\n";
-		char input {};
-		std::cin >> input;
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-		game.init();
 	}
+
+	std::cout << "Thanks for playing (:\n";
 
 	return 0;
 }

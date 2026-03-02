@@ -166,7 +166,7 @@ bool Game::init()
 			std::getline(std::cin, newPos);
 			newPos.erase(std::remove(newPos.begin(), newPos.end(), ' '), newPos.end());
 
-			if (!decideIfExit(newPos))
+			if (!decideIfExit(chosenPiece))
 			{
 				return false;
 			}
