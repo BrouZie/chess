@@ -11,7 +11,8 @@ public:
   bool tryMove(Position from, Position to);
   std::vector<Position> getLegalMoves(Position pos) const;
 	void displayLegalMoves(Position pos) const;
-	void init();
+	Piece::Team getCurrentTurn() { return m_currentTurn; }
+	bool init();
 
 private:
   Board m_board;

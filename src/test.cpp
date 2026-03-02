@@ -4,18 +4,13 @@
 int main()
 {
 	Game game;
+	std::cout << "Write 'exit' if you want to exit the program!\n";
 
-	while(true)
+	while(game.init())
 	{
-		std::cout << "Press 'n' to exit\n";
-		char userInput {};
-		std::cin >> userInput;
-
-		if (userInput == 'n')
-			break;
-
-		game.init();
 	}
+
+	std::cout << "Thanks for playing (:\n";
 
 	return 0;
 }
