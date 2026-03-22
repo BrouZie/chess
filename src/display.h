@@ -8,7 +8,8 @@ namespace Display
 {
 	constexpr std::string_view colorWhite = "\033[92m"; // green
 	constexpr std::string_view colorBlack = "\033[94m"; // blue
-	constexpr std::string_view colorReset = "\033[90m"; // white
+	constexpr std::string_view colorGrey = "\033[90m"; // grey
+	constexpr std::string_view colorReset = "\033[0m"; // white
 
 	constexpr std::string_view boardIndent = "";
 
