@@ -42,17 +42,19 @@ Board Board::standardPosition()
 
 void Board::printBoard() const
 {
+	using namespace Display;
+
 	auto printBoardLabels = []()
 	{
-		std::cout << Display::boardIndent << "  ";
-		for (char c{'a'}; c <= 'h'; ++c) { std::cout << ' ' << c << ' '; }
+		std::cout << boardIndent << "  ";
+		for (char c{'a'}; c <= 'h'; ++c) { std::cout << ' ' << colorGrey << c << colorReset << ' '; }
 		std::cout << '\n';
 	};
 
   for (int row { 7 }; row >= 0; --row)
 	{
 		int rank { row + 1 };
-		std::cout << Display::boardIndent << ' ' << rank;
+		std::cout << boardIndent << ' ' << colorGrey << rank << colorReset;
     for (int col {}; col < boardSize; ++col)
 		{
       std::cout << getPieceDisplay(Position { row, col} );
