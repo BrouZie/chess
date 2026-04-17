@@ -28,6 +28,7 @@ public:
   void printBoard() const;
   void setPieceAt(Position pos, Piece::Team team, Piece::Type type);
   const Piece& getPieceAt(Position pos) const;
+  Piece& getPieceAt(Position pos);
 
   std::vector<Position> getLegalMoves(Position pos) const;
   bool movePiece(Position from, Position to);

@@ -88,6 +88,12 @@ const Piece& Board::getPieceAt(Position pos) const
 	return m_grid[pos.row][pos.col];
 }
 
+Piece& Board::getPieceAt(Position pos)
+{
+    auto [row, col] = pos;
+    return m_grid[row][col];
+}
+
 bool Board::isInBounds(Position pos) const
 {
 	return pos.row >= 0 && pos.row < boardSize && pos.col >= 0 && pos.col < boardSize;
@@ -148,17 +154,16 @@ std::vector<Position> Board::getKingMoves(Position pos, Piece::Team team) const
 	auto [row, col] = pos;
 	std::vector<Position> moves {};
 
-	Position startPos { (team == Piece::Team::white) ? Position{0, 4} : Position{-1, 4} };
-	bool hasMoved { false };
+	int backRank = (team == Piece::Team::white) ? 0 : 7;
 
 	std::vector<Position> offsets {
 		{0, 1}, {1, 1}, {1, 0}, {1, -1},
 		{0, -1}, {-1, -1}, {-1, 0}, {-1, 1}
 	};
-	if (pos != startPos)
-	{
-		hasMoved = true;
-	}
+
+    const Piece& king = getPieceAt({backRank, 4});
+    const Piece& kingsideRook = getPieceAt({backRank, 7});
+    const Piece& queensideRook = getPieceAt({backRank, 0});
 
 	for (const auto& [dr, dc] : offsets)
 	{
@@ -169,6 +174,30 @@ std::vector<Position> Board::getKingMoves(Position pos, Piece::Team team) const
 		}
 	}
 
+	std::vector<Position> castlingOffsets {
+		{0, 2}, {0, -2}
+	};
+
+	if (!king.getHasMoved())
+	{
+			if (!kingsideRook.getHasMoved() && 
+					isEmptyAt(Position{backRank, 5}) &&
+					isEmptyAt(Position{backRank, 6}))
+			{
+				moves.push_back({ row + castlingOffsets[0].row, col + castlingOffsets[0].col });
+			}
+
+			if (!queensideRook.getHasMoved() && 
+					isEmptyAt(Position{backRank, 3}) &&
+					isEmptyAt(Position{backRank, 2}) &&
+					isEmptyAt(Position{backRank, 1}))
+			{
+				moves.push_back({ row + castlingOffsets[1].row, col + castlingOffsets[1].col });
+			}
+
+	}
+
+
 	return moves;
 }
 
@@ -176,7 +205,6 @@ std::vector<Position> Board::getRookMoves(Position pos, Piece::Team team) const
 {
 	auto [row, col] = pos;
 	std::vector<Position> moves {};
-	std::array<Position, 2> startPos { (team == Piece::Team::white) ? {Position{0, 0}, Position{0, 7}} : {Position{-1, 0}, Position{-1, 7}} };
 
 	std::vector<Position> directions { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
 
@@ -309,10 +337,11 @@ bool Board::movePiece(Position from, Position to)
 	auto [fromRow, fromCol] = from;
 	auto [toRow, toCol] = to;
 
-	const Piece& piece { m_grid[fromRow][fromCol] };
+	Piece& piece { m_grid[fromRow][fromCol] }; // Should maybe change to getPieceAt function
 	if (piece.getType() == Piece::Type::empty)
 		return false;
 
+	piece.setHasMoved(true);
 	m_grid[toRow][toCol] = Piece(piece.getTeam(), piece.getType());
 	m_grid[fromRow][fromCol] = Piece(); // empty piece
 	return true;
