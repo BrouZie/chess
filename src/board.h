@@ -14,6 +14,10 @@ struct Position
   {
       return row == other.row && col == other.col;
   }
+  bool operator!=(const Position& other) const
+  {
+      return row != other.row || col != other.col;
+  }
 };
 
 class Board
@@ -24,6 +28,7 @@ public:
   void printBoard() const;
   void setPieceAt(Position pos, Piece::Team team, Piece::Type type);
   const Piece& getPieceAt(Position pos) const;
+  Piece& getPieceAt(Position pos);
 
   std::vector<Position> getLegalMoves(Position pos) const;
   bool movePiece(Position from, Position to);
@@ -41,10 +46,13 @@ private:
   std::vector<Position> getRookMoves(Position pos, Piece::Team team) const;
   std::vector<Position> getBishopMoves(Position pos, Piece::Team team) const;
   std::vector<Position> getQueenMoves(Position pos, Piece::Team team) const;
+	
+  std::vector<Position> getKingAttacks(Position pos, Piece::Team team) const;
 
   bool isInBounds(Position pos) const;
   bool isEmptyAt(Position pos) const;
   bool isEnemyAt(Position pos, Piece::Team team) const;
+	bool isSquareAttacked(Position pos, Piece::Team team) const;
 
   std::string getPieceDisplay(Position pos) const;
 };

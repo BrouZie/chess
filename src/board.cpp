@@ -90,6 +90,12 @@ const Piece& Board::getPieceAt(Position pos) const
 	return m_grid[pos.row][pos.col];
 }
 
+Piece& Board::getPieceAt(Position pos)
+{
+    auto [row, col] = pos;
+    return m_grid[row][col];
+}
+
 bool Board::isInBounds(Position pos) const
 {
 	return pos.row >= 0 && pos.row < boardSize && pos.col >= 0 && pos.col < boardSize;
@@ -123,6 +129,64 @@ std::vector<Position> Board::getLegalMoves(Position pos) const
 		}
 }
 
+std::vector<Position> Board::getKingAttacks(Position pos, Piece::Team team) const
+{
+	auto [row, col] = pos;
+	std::vector<Position> moves {};
+
+	std::vector<Position> offsets {
+		{0, 1}, {1, 1}, {1, 0}, {1, -1},
+		{0, -1}, {-1, -1}, {-1, 0}, {-1, 1}
+	};
+
+	for (const auto& [dr, dc] : offsets)
+	{
+		Position target { row + dr, col + dc };
+		if (isInBounds(target) && (isEmptyAt(target) || isEnemyAt(target, team)))
+		{
+			moves.push_back(target);
+		}
+	}
+
+	return moves;
+}
+
+bool Board::isSquareAttacked(Position pos, Piece::Team team) const
+{
+	for (int row = 0; row < 8; row++)
+	{
+		for (int col = 0; col < 8; col++)
+		{
+			const Piece& piece { getPieceAt({row, col})};
+			if (piece.getType() == Piece::Type::empty ||
+					piece.getTeam() == team)
+			{
+				continue;
+			}
+
+   		std::vector<Position> attackedSquares {};
+
+			if (piece.getType() == Piece::Type::king)
+			{
+				attackedSquares = getKingAttacks({row, col}, piece.getTeam());
+			}
+			else
+			{
+				attackedSquares = getLegalMoves({row, col});
+			}
+
+			for (const Position& square : attackedSquares)
+			{
+				if (square == pos)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 std::vector<Position> Board::getKnightMoves(Position pos, Piece::Team team) const
 {
 	auto [row, col] = pos;
@@ -150,10 +214,14 @@ std::vector<Position> Board::getKingMoves(Position pos, Piece::Team team) const
 	auto [row, col] = pos;
 	std::vector<Position> moves {};
 
+	int backRank = (team == Piece::Team::white) ? 0 : 7;
+
 	std::vector<Position> offsets {
 		{0, 1}, {1, 1}, {1, 0}, {1, -1},
 		{0, -1}, {-1, -1}, {-1, 0}, {-1, 1}
 	};
+
+  const Piece& king = getPieceAt({backRank, 4});
 
 	for (const auto& [dr, dc] : offsets)
 	{
@@ -162,6 +230,40 @@ std::vector<Position> Board::getKingMoves(Position pos, Piece::Team team) const
 		{
 			moves.push_back(target);
 		}
+	}
+
+	std::vector<Position> castlingOffsets {
+		{0, 2}, {0, -2}
+	};
+
+	if (!king.getHasMoved())
+	{
+    const Piece& kingsideRook = getPieceAt({backRank, 7});
+		if (kingsideRook.getType() == Piece::Type::rook &&
+				!kingsideRook.getHasMoved() && 
+				isEmptyAt(Position{backRank, 5}) &&
+				isEmptyAt(Position{backRank, 6}) &&
+				!isSquareAttacked({backRank, 4}, team) &&
+				!isSquareAttacked({backRank, 5}, team) &&
+				!isSquareAttacked({backRank, 6}, team))
+		{
+			moves.push_back({ row + castlingOffsets[0].row, col + castlingOffsets[0].col });
+		}
+
+    const Piece& queensideRook = getPieceAt({backRank, 0});
+		if (queensideRook.getType() == Piece::Type::rook &&
+				!queensideRook.getHasMoved() && 
+				isEmptyAt(Position{backRank, 3}) &&
+				isEmptyAt(Position{backRank, 2}) &&
+				isEmptyAt(Position{backRank, 1}) &&
+				!isSquareAttacked({backRank, 4}, team) &&
+				!isSquareAttacked({backRank, 3}, team) &&
+				!isSquareAttacked({backRank, 2}, team) &&
+				!isSquareAttacked({backRank, 1}, team))
+		{
+			moves.push_back({ row + castlingOffsets[1].row, col + castlingOffsets[1].col });
+		}
+
 	}
 
 	return moves;
@@ -303,11 +405,32 @@ bool Board::movePiece(Position from, Position to)
 	auto [fromRow, fromCol] = from;
 	auto [toRow, toCol] = to;
 
-	const Piece& piece { m_grid[fromRow][fromCol] };
+	Piece& piece { m_grid[fromRow][fromCol] }; // Should maybe change to getPieceAt function
 	if (piece.getType() == Piece::Type::empty)
 		return false;
 
-	m_grid[toRow][toCol] = Piece(piece.getTeam(), piece.getType());
+	if (piece.getType() == Piece::Type::king)
+	{
+    int backRank = (piece.getTeam() == Piece::Team::white) ? 0 : 7;
+
+    if (to.col - from.col == 2) // kingside
+    {
+        Piece& kingsideRook = getPieceAt({backRank, 7});
+        kingsideRook.setHasMoved(true);
+        m_grid[backRank][5] = kingsideRook;
+        m_grid[backRank][7] = Piece();
+    }
+    if (to.col - from.col == -2) // queenside
+    {
+        Piece& queensideRook = getPieceAt({backRank, 0});
+        queensideRook.setHasMoved(true);
+        m_grid[backRank][3] = queensideRook;
+        m_grid[backRank][0] = Piece();
+    }
+	}
+
+	piece.setHasMoved(true);
+  m_grid[toRow][toCol] = piece; 
 	m_grid[fromRow][fromCol] = Piece(); // empty piece
 	return true;
 }
