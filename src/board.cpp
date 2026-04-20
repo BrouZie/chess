@@ -114,23 +114,25 @@ bool Board::isEnemyAt(Position pos, Piece::Team team) const
 
 std::vector<Position> Board::getLegalMoves(Position pos) const
 {
-		auto [row, col] = pos;
-		const Piece& piece { m_grid[row][col] };
+	std::cout << "getLegalMoves started\n";
+	auto [row, col] = pos;
+	const Piece& piece { m_grid[row][col] };
 
-		switch (piece.getType())
-		{
-				case Piece::Type::knight: return getKnightMoves(pos, piece.getTeam());
-				case Piece::Type::rook: return getRookMoves(pos, piece.getTeam());
-				case Piece::Type::bishop: return getBishopMoves(pos, piece.getTeam());
-				case Piece::Type::queen: return getQueenMoves(pos, piece.getTeam());
-				case Piece::Type::king: return getKingMoves(pos, piece.getTeam());
-				case Piece::Type::pawn: return getPawnMoves(pos, piece.getTeam());
-				default: return {};
-		}
+	switch (piece.getType())
+	{
+		case Piece::Type::knight: return getKnightMoves(pos, piece.getTeam());
+		case Piece::Type::rook: return getRookMoves(pos, piece.getTeam());
+		case Piece::Type::bishop: return getBishopMoves(pos, piece.getTeam());
+		case Piece::Type::queen: return getQueenMoves(pos, piece.getTeam());
+		case Piece::Type::king: return getKingMoves(pos, piece.getTeam());
+		case Piece::Type::pawn: return getPawnMoves(pos, piece.getTeam());
+		default: return {};
+	}
 }
 
 std::vector<Position> Board::getKnightAttacks(Position pos, Piece::Team team) const
 {
+	std::cout << "getKnightAttacks started\n";
 	auto [row, col] = pos;
 	std::vector<Position> moves {};
 
@@ -173,8 +175,42 @@ std::vector<Position> Board::getKingAttacks(Position pos, Piece::Team team) cons
 	return moves;
 }
 
+std::vector<Position> Board::getBishopAttacks(Position pos, Piece::Team team) const
+{
+	std::cout << "getBishopAttacks started\n";
+	auto [row, col] = pos;
+	std::vector<Position> moves {};
+
+	std::vector<Position> directions { {1, 1}, {1, -1}, {-1, -1}, {-1, 1} };
+
+	for (const auto& [dr, dc] : directions)
+	{
+		Position current { row + dr, col + dc };
+
+		while (isInBounds(current))
+		{
+			if (isEmptyAt(current))
+			{
+				moves.push_back(current);
+			}
+			else
+			{
+				if (isEnemyAt(current, team))
+					moves.push_back(current);
+				break;
+			}
+			current.row += dr;
+			current.col += dc;
+		}
+	}
+
+	return moves;
+}
+
+
 bool Board::isSquareAttacked(Position pos, Piece::Team team) const
 {
+	std::cout << "isSquareAttacked started\n";
 	for (int row = 0; row < 8; row++)
 	{
 		for (int col = 0; col < 8; col++)
@@ -195,26 +231,36 @@ bool Board::isSquareAttacked(Position pos, Piece::Team team) const
 			else if (piece.getType() == Piece::Type::knight)
 			{
 				attackedSquares = getKnightAttacks({row, col}, piece.getTeam());
+				std::cout << "else if Knight\n";
+			}
+			else if (piece.getType() == Piece::Type::bishop)
+			{
+				attackedSquares = getBishopAttacks({row, col}, piece.getTeam());
+				std::cout << "else if Bishop\n";
 			}
 			else
 			{
 				attackedSquares = getLegalMoves({row, col});
+				std::cout << "else Other\n";
 			}
 
 			for (const Position& square : attackedSquares)
 			{
 				if (square == pos)
 				{
+					std::cout << "Attacked\n";
 					return true;
 				}
 			}
 		}
 	}
+	std::cout << "Not attacked\n";
 	return false;
 }
 
 bool Board::isCheck(Piece::Team team) const
 {
+	std::cout << "isCheck started\n";
 	Position kingPos {};
 	for (int row = 0; row < 8; row++)
 	{
@@ -233,6 +279,7 @@ bool Board::isCheck(Piece::Team team) const
 
 std::vector<Position> Board::getKnightMoves(Position pos, Piece::Team team) const
 {
+	std::cout << "getKnightMoves started\n";
     std::vector<Position> moves {};
 
     for (const Position& target : getKnightAttacks(pos, team))
@@ -319,33 +366,18 @@ std::vector<Position> Board::getRookMoves(Position pos, Piece::Team team) const
 
 std::vector<Position> Board::getBishopMoves(Position pos, Piece::Team team) const
 {
-	auto [row, col] = pos;
-	std::vector<Position> moves {};
+	std::cout << "getBishopMoves started\n";
+    std::vector<Position> moves {};
 
-	std::vector<Position> directions { {1, 1}, {1, -1}, {-1, -1}, {-1, 1} };
+    for (const Position& target : getBishopAttacks(pos, team))
+    {
+        Board copy = *this;
+        copy.movePiece(pos, target);
+        if (!copy.isCheck(team))
+            moves.push_back(target);
+    }
 
-	for (const auto& [dr, dc] : directions)
-	{
-		Position current { row + dr, col + dc };
-
-		while (isInBounds(current))
-		{
-			if (isEmptyAt(current))
-			{
-				moves.push_back(current);
-			}
-			else
-			{
-				if (isEnemyAt(current, team))
-					moves.push_back(current);
-				break;
-			}
-			current.row += dr;
-			current.col += dc;
-		}
-	}
-
-	return moves;
+    return moves;
 }
 
 std::vector<Position> Board::getQueenMoves(Position pos, Piece::Team team) const
@@ -419,6 +451,7 @@ std::vector<Position> Board::getPawnMoves(Position pos, Piece::Team team) const
 
 bool Board::movePiece(Position from, Position to)
 {
+	std::cout << "movePiece Started\n";
 	auto [fromRow, fromCol] = from;
 	auto [toRow, toCol] = to;
 
