@@ -50,6 +50,8 @@ private:
   std::vector<Position> getKingAttacks(Position pos, Piece::Team team) const;
   std::vector<Position> getKnightAttacks(Position pos, Piece::Team team) const;
   std::vector<Position> getBishopAttacks(Position pos, Piece::Team team) const;
+  std::vector<Position> getQueenAttacks(Position pos, Piece::Team team) const;
+  std::vector<Position> getRookAttacks(Position pos, Piece::Team team) const;
 
   bool isInBounds(Position pos) const;
   bool isEmptyAt(Position pos) const;

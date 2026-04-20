@@ -201,15 +201,3 @@ bool Game::init()
 
 	return true;
 }
-
-void Game::init_test()
-{
-	tryMove(chessToGrid("d2"), chessToGrid("d3"));
-	tryMove(chessToGrid("e7"), chessToGrid("e6"));
-	tryMove(chessToGrid("c1"), chessToGrid("d2"));
-	tryMove(chessToGrid("f8"), chessToGrid("b4"));
-	std::cout << "-------------------------\n";
-	m_board.getLegalMoves(chessToGrid("d2"));
-	std::cout << "-------------------------\n";
-	displayLegalMoves(chessToGrid("d2"));
-}
