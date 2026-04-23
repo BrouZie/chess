@@ -13,6 +13,7 @@ public:
 	void displayLegalMoves(Position pos) const;
 	Piece::Team getCurrentTurn() { return m_currentTurn; }
 	bool init();
+	void init_test();
 
 private:
   Board m_board;
