@@ -269,7 +269,25 @@ std::vector<Position> Board::getRookAttacks(Position pos, Piece::Team team) cons
 	return moves;
 }
 
+std::vector<Position> Board::getPawnAttacks(Position pos, Piece::Team team) const
+{
+	auto [row, col] = pos;
+	std::vector<Position> moves {};
 
+	int direction { (team == Piece::Team::white) ? 1 : -1 };
+
+	// Diagonal captures
+	for (int dc : {-1, 1})
+	{
+		Position diag { row + direction, col + dc };
+		if (isInBounds(diag) && isEnemyAt(diag, team))
+		{
+			moves.push_back(diag);
+		}
+	}
+
+	return moves;
+}
 
 bool Board::isSquareAttacked(Position pos, Piece::Team team) const
 {
@@ -306,9 +324,13 @@ bool Board::isSquareAttacked(Position pos, Piece::Team team) const
 			{
 				attackedSquares = getRookAttacks({row, col}, piece.getTeam());
 			}
+			else if (piece.getType() == Piece::Type::pawn)
+			{
+				attackedSquares = getPawnAttacks({row, col}, piece.getTeam());
+			}
 			else
 			{
-				attackedSquares = getLegalMoves({row, col});
+				continue;
 			}
 
 			for (const Position& square : attackedSquares)
@@ -393,7 +415,16 @@ std::vector<Position> Board::getKingMoves(Position pos, Piece::Team team) const
 		}
 	}
 
-	return moves;
+	std::vector<Position> legalMoves {};
+	for (const Position& target : moves)
+	{
+			Board copy = *this;
+			copy.movePiece(pos, target);
+			if (!copy.isCheck(team))
+					legalMoves.push_back(target);
+	}
+
+	return legalMoves;
 }
 
 
@@ -465,17 +496,19 @@ std::vector<Position> Board::getPawnMoves(Position pos, Piece::Team team) const
 		}
 	}
 
-	// Diagonal captures
-	for (int dc : {-1, 1})
+	std::vector<Position> attacks { getPawnAttacks(pos, team) };
+	moves.insert(moves.end(), attacks.begin(), attacks.end());
+
+	std::vector<Position> legalMoves {};
+	for (const Position& target : moves)
 	{
-		Position diag { row + direction, col + dc };
-		if (isInBounds(diag) && isEnemyAt(diag, team))
-		{
-			moves.push_back(diag);
-		}
+			Board copy = *this;
+			copy.movePiece(pos, target);
+			if (!copy.isCheck(team))
+					legalMoves.push_back(target);
 	}
 
-	return moves;
+	return legalMoves;
 }
 
 bool Board::movePiece(Position from, Position to)

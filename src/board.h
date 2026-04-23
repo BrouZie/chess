@@ -37,8 +37,6 @@ private:
   static constexpr int boardSize { 8 };
 
   std::array<std::array<Piece, boardSize>, boardSize> m_grid {};
-  // board[0][col] = bottom row
-  // board[7][col] = top row
 
   std::vector<Position> getPawnMoves(Position pos, Piece::Team team) const;
   std::vector<Position> getKnightMoves(Position pos, Piece::Team team) const;
@@ -52,6 +50,7 @@ private:
   std::vector<Position> getBishopAttacks(Position pos, Piece::Team team) const;
   std::vector<Position> getQueenAttacks(Position pos, Piece::Team team) const;
   std::vector<Position> getRookAttacks(Position pos, Piece::Team team) const;
+  std::vector<Position> getPawnAttacks(Position pos, Piece::Team team) const;
 
   bool isInBounds(Position pos) const;
   bool isEmptyAt(Position pos) const;
