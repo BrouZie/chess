@@ -66,6 +66,12 @@ Game::Game()
 {
 }
 
+// Initialize w/ testPositions
+Game::Game(Board testPositions)
+	: m_board { testPositions }
+{
+}
+
 void Game::displayBoard() const { m_board.printBoard(); }
 
 bool Game::tryMove(Position from, Position to)

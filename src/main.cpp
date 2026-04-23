@@ -3,7 +3,7 @@
 
 int main()
 {
-	Game game;
+	Game game { Board::testPositions() };
 	game.displayBoard();
 
 	std::cout << "\n";
