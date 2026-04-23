@@ -3,7 +3,7 @@
 
 int main()
 {
-	Game game;
+	Game game{Board::testPositions()};
 	std::cout << "Write 'exit' if you want to exit the program!\n";
 
 	while(game.init())

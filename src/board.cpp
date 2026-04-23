@@ -11,8 +11,9 @@ Board Board::testPositions()
 {
     Board board {};
 
-    board.setPieceAt({ 0, 0 }, Piece::Team::white, Piece::Type::rook);
-    board.setPieceAt({ 0, 1 }, Piece::Team::white, Piece::Type::knight);
+    board.setPieceAt({ 1, 1 }, Piece::Team::black, Piece::Type::queen);
+    board.setPieceAt({ 1, 0 }, Piece::Team::black, Piece::Type::queen);
+    board.setPieceAt({ 0, 7 }, Piece::Team::white, Piece::Type::king);
 
     return board;
 }
@@ -353,22 +354,22 @@ bool Board::isSquareAttacked(Position pos, Piece::Team team) const
     return false;
 }
 
+
 bool Board::isCheck(Piece::Team team) const
 {
-    Position kingPos {};
-    for (int row = 0; row < 8; row++)
-    {
-        for (int col = 0; col < 8; col++)
-        {
-            if (getPieceAt({ row, col }).getType() == Piece::Type::king &&
-                getPieceAt({ row, col }).getTeam() == team)
-            {
-                kingPos = { row, col };
-            }
-        }
-    }
-
-    return isSquareAttacked(kingPos, team);
+	Position kingPos {};
+	for (int row = 0; row < 8; row++)
+	{
+			for (int col = 0; col < 8; col++)
+			{
+					if (getPieceAt({ row, col }).getType() == Piece::Type::king &&
+							getPieceAt({ row, col }).getTeam() == team)
+					{
+							kingPos = { row, col };
+					}
+			}
+	}
+  return isSquareAttacked(kingPos, team);
 }
 
 std::vector<Position> Board::getKnightMoves(Position pos, Piece::Team team) const

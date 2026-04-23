@@ -7,7 +7,7 @@ class Game
 {
   public:
     Game();
-	Game(Board testPositions);
+		Game(Board testPositions);
     void displayBoard() const;
     bool tryMove(Position from, Position to);
     std::vector<Position> getLegalMoves(Position pos) const;
@@ -17,7 +17,8 @@ class Game
         return m_currentTurn;
     }
     bool init();
-    void init_test();
+		bool isStalemate(Piece::Team team) const;
+		bool isCheckmate(Piece::Team team) const;
 
   private:
     Board m_board;

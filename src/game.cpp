@@ -119,11 +119,58 @@ void Game::displayLegalMoves(Position pos) const
 	}
 }
 
+bool Game::isStalemate(Piece::Team team) const
+{
+	for (int row = 0; row < 8; row++)
+	{
+		for (int col = 0; col < 8; col++)
+		{
+			const Piece& piece { m_board.getPieceAt({ row, col }) };
+			if (piece.getTeam() != team)
+			{
+				continue;
+			}
+			if (getLegalMoves({row, col}).size() != 0)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+bool Game::isCheckmate(Piece::Team team) const
+{
+	if (isStalemate(team) &&
+			m_board.isCheck(team))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 bool Game::init()
 {
 	std::cout << teamToString(getCurrentTurn()) << "'s turn:\n";
 
 	displayBoard();
+
+	if (isStalemate(getCurrentTurn()))
+	{
+		Piece::Team team { m_currentTurn == Piece::Team::white ? Piece::Team::black : Piece::Team::white }; 
+		std::cout << "Checkmate! " << teamToString(team) << " won the game!\n"; 
+		return false;
+	}
+
+	if (isStalemate(getCurrentTurn()))
+	{
+		std::cout << "Stalemate! The game is a draw!\n";
+		return false;
+	}
+
 	std::string chosenPiece {};
 
 	while (true)
