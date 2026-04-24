@@ -31,7 +31,7 @@ class Board
     const Piece& getPieceAt(Position pos) const;
     Piece& getPieceAt(Position pos);
 		bool isCheck(Piece::Team team) const;
-		Position getKingPos(Piece::Team team) const; 
+		std::vector<Piece> getAllPieces(Piece::Team team) const;
 
     std::vector<Position> getLegalMoves(Position pos) const;
     bool movePiece(Position from, Position to);

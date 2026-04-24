@@ -139,6 +139,83 @@ bool Game::isStalemate(Piece::Team team) const
 	return true;
 }
 
+bool Game::isInsufficientMaterial() const
+{
+	std::vector<Piece> allPiecesWhite {m_board.getAllPieces(Piece::Team::white)};
+	std::vector<Piece> allPiecesBlack {m_board.getAllPieces(Piece::Team::black)};
+	if (allPiecesWhite.size() == 1 && allPiecesBlack.size() == 1)
+	{
+		return true;
+	}
+	else if (allPiecesWhite.size() == 1 && allPiecesBlack.size() == 2)
+	{
+		for (const Piece& piece : allPiecesBlack)
+		{
+			if (piece.getType() == Piece::Type::king) { continue; }
+			if (piece.getType() == Piece::Type::knight) { return true; }
+			if (piece.getType() == Piece::Type::bishop) { return true; }
+			return false;
+		}
+	}
+	else if (allPiecesWhite.size() == 2 && allPiecesBlack.size() == 1)
+	{
+		for (const Piece& piece : allPiecesWhite)
+		{
+			if (piece.getType() == Piece::Type::king) { continue; }
+			if (piece.getType() == Piece::Type::knight) { return true; }
+			if (piece.getType() == Piece::Type::bishop) { return true; }
+			return false;
+		}
+	}
+	else if (allPiecesWhite.size() == 2 && allPiecesBlack.size() == 2)
+	{
+		Position posWhiteBishop {};
+		for (const Piece& piece : allPiecesWhite)
+		{
+			if (piece.getType() == Piece::Type::king) { continue; }
+			if (piece.getType() != Piece::Type::bishop) { return false; }
+			
+			for (int row = 0; row < 8; row++)
+			{
+				for (int col = 0; col < 8; col++)
+				{
+					if (m_board.getPieceAt({row, col}).getTeam() == Piece::Team::white &&
+							m_board.getPieceAt({row, col}).getType() == Piece::Type::bishop)
+					{
+						posWhiteBishop = {row, col};
+						break;
+					}
+				}
+			}
+		}
+
+		Position posBlackBishop {};
+		for (const Piece& piece : allPiecesBlack)
+		{
+			if (piece.getType() == Piece::Type::king) { continue; }
+			if (piece.getType() != Piece::Type::bishop) { return false; }
+			for (int row = 0; row < 8; row++)
+			{
+				for (int col = 0; col < 8; col++)
+				{
+					if (m_board.getPieceAt({row, col}).getTeam() == Piece::Team::black &&
+							m_board.getPieceAt({row, col}).getType() == Piece::Type::bishop)
+					{
+						posBlackBishop = {row, col};
+						break;
+					}
+				}
+			}
+		}
+
+		if ((posWhiteBishop.row + posWhiteBishop.col) % 2 != (posBlackBishop.row + posBlackBishop.col) % 2)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool Game::isCheckmate(Piece::Team team) const
 {
 	if (isStalemate(team) &&
@@ -158,10 +235,16 @@ bool Game::init()
 
 	displayBoard();
 
-	if (isStalemate(getCurrentTurn()))
+	if (isCheckmate(getCurrentTurn()))
 	{
 		Piece::Team team { m_currentTurn == Piece::Team::white ? Piece::Team::black : Piece::Team::white }; 
 		std::cout << "Checkmate! " << teamToString(team) << " won the game!\n"; 
+		return false;
+	}
+	
+	if (isInsufficientMaterial())
+	{
+		std::cout << "Insufficient material! The game is a draw!\n";
 		return false;
 	}
 

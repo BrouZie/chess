@@ -19,6 +19,7 @@ class Game
     bool init();
 		bool isStalemate(Piece::Team team) const;
 		bool isCheckmate(Piece::Team team) const;
+		bool isInsufficientMaterial() const;
 
   private:
     Board m_board;

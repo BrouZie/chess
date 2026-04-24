@@ -11,9 +11,10 @@ Board Board::testPositions()
 {
     Board board {};
 
-    board.setPieceAt({ 1, 1 }, Piece::Team::black, Piece::Type::queen);
-    board.setPieceAt({ 1, 0 }, Piece::Team::black, Piece::Type::queen);
-    board.setPieceAt({ 0, 7 }, Piece::Team::white, Piece::Type::king);
+    board.setPieceAt({ 3, 3 }, Piece::Team::white, Piece::Type::king);
+		board.setPieceAt({ 1, 0 }, Piece::Team::white, Piece::Type::bishop);
+		board.setPieceAt({ 2, 1 }, Piece::Team::black, Piece::Type::pawn);
+    board.setPieceAt({ 0, 0 }, Piece::Team::black, Piece::Type::king);
 
     return board;
 }
@@ -110,6 +111,27 @@ Piece& Board::getPieceAt(Position pos)
 {
     auto [row, col] = pos;
     return m_grid[row][col];
+}
+
+std::vector<Piece> Board::getAllPieces(Piece::Team team) const
+{
+	std::vector<Piece> pieces {};
+	for (int row = 0; row < 8; row++)
+	{
+			for (int col = 0; col < 8; col++)
+			{
+				if (getPieceAt({row, col}).getType() == Piece::Type::empty ||
+						getPieceAt({row, col}).getTeam() != team)
+				{
+					continue;
+				}
+				else
+				{
+					pieces.push_back(getPieceAt({row, col}));
+				}
+			}
+	}
+	return pieces;
 }
 
 bool Board::isInBounds(Position pos) const

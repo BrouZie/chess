@@ -8,7 +8,6 @@ int main()
 
 	while(game.init())
 	{
-		game.init();
 	}
 
 	std::cout << "Thanks for playing (:\n";
