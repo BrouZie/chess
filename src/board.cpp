@@ -11,8 +11,10 @@ Board Board::testPositions()
 {
     Board board {};
 
-    board.setPieceAt({ 0, 0 }, Piece::Team::white, Piece::Type::rook);
-    board.setPieceAt({ 0, 1 }, Piece::Team::white, Piece::Type::knight);
+    board.setPieceAt({ 3, 3 }, Piece::Team::white, Piece::Type::king);
+		board.setPieceAt({ 1, 0 }, Piece::Team::white, Piece::Type::bishop);
+		board.setPieceAt({ 2, 1 }, Piece::Team::black, Piece::Type::pawn);
+    board.setPieceAt({ 0, 0 }, Piece::Team::black, Piece::Type::king);
 
     return board;
 }
@@ -109,6 +111,27 @@ Piece& Board::getPieceAt(Position pos)
 {
     auto [row, col] = pos;
     return m_grid[row][col];
+}
+
+std::vector<Piece> Board::getAllPieces(Piece::Team team) const
+{
+	std::vector<Piece> pieces {};
+	for (int row = 0; row < 8; row++)
+	{
+			for (int col = 0; col < 8; col++)
+			{
+				if (getPieceAt({row, col}).getType() == Piece::Type::empty ||
+						getPieceAt({row, col}).getTeam() != team)
+				{
+					continue;
+				}
+				else
+				{
+					pieces.push_back(getPieceAt({row, col}));
+				}
+			}
+	}
+	return pieces;
 }
 
 bool Board::isInBounds(Position pos) const
@@ -353,22 +376,22 @@ bool Board::isSquareAttacked(Position pos, Piece::Team team) const
     return false;
 }
 
+
 bool Board::isCheck(Piece::Team team) const
 {
-    Position kingPos {};
-    for (int row = 0; row < 8; row++)
-    {
-        for (int col = 0; col < 8; col++)
-        {
-            if (getPieceAt({ row, col }).getType() == Piece::Type::king &&
-                getPieceAt({ row, col }).getTeam() == team)
-            {
-                kingPos = { row, col };
-            }
-        }
-    }
-
-    return isSquareAttacked(kingPos, team);
+	Position kingPos {};
+	for (int row = 0; row < 8; row++)
+	{
+			for (int col = 0; col < 8; col++)
+			{
+					if (getPieceAt({ row, col }).getType() == Piece::Type::king &&
+							getPieceAt({ row, col }).getTeam() == team)
+					{
+							kingPos = { row, col };
+					}
+			}
+	}
+  return isSquareAttacked(kingPos, team);
 }
 
 std::vector<Position> Board::getKnightMoves(Position pos, Piece::Team team) const

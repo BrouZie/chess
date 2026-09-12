@@ -3,18 +3,14 @@
 
 int main()
 {
-	Game game { Board::testPositions() };
-	game.displayBoard();
+	Game game{Board::standardPosition()};
+	std::cout << "Write 'exit' if you want to exit the program!\n";
 
-	std::cout << "\n";
-
-	if (game.tryMove({1, 1}, {2, 1}))
+	while(game.init())
 	{
-		game.displayBoard();
-		std::cout << "Move successful!\n";
 	}
-	else
-		std::cout << "Failed! Illegal move!\n";
+
+	std::cout << "Thanks for playing (:\n";
 
 	return 0;
 }
